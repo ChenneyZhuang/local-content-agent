@@ -1,8 +1,8 @@
-"""Web search — uses the websearch package if installed, falls back to local script."""
+"""Web search — uses the websearch package if installed, falls back to built-in DuckDuckGo."""
 
 import re
-import subprocess
-import os
+import urllib.request
+import urllib.parse
 
 # Prefer the websearch package
 try:
@@ -10,8 +10,6 @@ try:
     _has_package = True
 except ImportError:
     _has_package = False
-
-SCRIPT = "/Volumes/SSD/scripts/web_search.py"
 
 
 def search(query: str, limit: int = 5) -> str:
@@ -23,23 +21,32 @@ def search(query: str, limit: int = 5) -> str:
             lines.append(f"{i}. {r['title']}\n   {r['url']}")
         return "\n\n".join(lines)
 
-    # Fallback to local script
-    if os.path.exists(SCRIPT):
-        result = subprocess.run(
-            ["python3", SCRIPT, query, str(limit)],
-            capture_output=True, text=True, timeout=30,
-        )
-        return result.stdout
-
-    # Last resort: basic urllib
-    import urllib.request, urllib.parse
+    # Built-in fallback: DuckDuckGo HTML search (zero dependencies)
     url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    req = urllib.request.Request(url, headers={
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+    })
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
-        results = re.findall(r'class="result__snippet">(.*?)</a>', html, re.DOTALL)
-        return "\n\n".join(re.sub(r"<[^>]+>", "", r).strip() for r in results[:limit])
+        results = re.findall(
+            r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+            html, re.DOTALL
+        )
+        lines = []
+        for u, t in results[:limit]:
+            title = re.sub(r"<[^>]+>", "", t).strip()
+            # Decode DuckDuckGo redirect URLs
+            clean_url = u
+            if "uddg=" in clean_url:
+                clean_url = clean_url.split("uddg=")[1]
+                for sep in ("&rut=", "&amp;rut=", "?rut="):
+                    if sep in clean_url:
+                        clean_url = clean_url.split(sep)[0]
+                        break
+                clean_url = urllib.parse.unquote(clean_url)
+            lines.append(f"{len(lines)+1}. {title}\n   {clean_url}")
+        return "\n\n".join(lines) if lines else "(no results)"
     except Exception as e:
         return f"(search failed: {e})"
 

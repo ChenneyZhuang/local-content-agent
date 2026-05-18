@@ -18,7 +18,7 @@ def _rate_limit(interval: float = 1.5):
 
 def chat(prompt: str, system: str = "", max_tokens: int = 4096) -> str:
     """Call the LLM and return the response text."""
-    if not DEEPSEEK_API_KEY or DEEPSEEK_API_KEY.startswith("sk-your-"):
+    if not DEEPSEEK_API_KEY:
         raise RuntimeError(
             "DEEPSEEK_API_KEY not set. Run: export DEEPSEEK_API_KEY=sk-..."
         )

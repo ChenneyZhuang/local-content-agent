@@ -6,7 +6,7 @@ from pathlib import Path
 
 # LLM
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
-DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")
 LLM_MODEL = os.getenv("LCA_LLM_MODEL", "deepseek-chat")
 
 # Perplexity (optional)
