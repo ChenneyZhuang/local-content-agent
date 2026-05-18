@@ -89,7 +89,7 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
         if not (topic_dir / "final_post.md").exists():
             final = polish_post(brand.raw, draft.content, topic.title, topic.index)
             (topic_dir / "final_post.md").write_text(
-                f"# {final.content}", encoding="utf-8"
+                f"{final.content}", encoding="utf-8"
             )
             posts.append(final)
         else:

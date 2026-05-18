@@ -55,7 +55,7 @@ BUSINESS TYPE: {brand.introduction[:500]}
 
 Requirements:
 1. Fit the business industry and services perfectly.
-2. Match current season (late autumn/winter in Australia), upcoming events, local Canberra.
+2. Match current season and upcoming local events in Canberra, Australia.
 3. Mix 4 types evenly: Educational Tips / Customer Story / Festival Greeting / Local Community Engagement.
 4. No hard-sell. Helpful, friendly, community-focused.
 5. Output exactly 8 topics, numbered 1-8, one per line."""
