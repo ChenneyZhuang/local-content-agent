@@ -1,6 +1,5 @@
 """Step 1: Find business website and social links."""
 
-import re
 from lca.tools.web_search import search, extract_urls
 from lca.tools.website import probe_urls
 from lca.models.schemas import BusinessInfo
@@ -33,7 +32,11 @@ def find_business(name: str) -> BusinessInfo:
                 break
 
     # 3. Facebook
-    for q in [f'"{name}" Facebook Canberra', f'"{name}" Facebook ACT', f'"{name}" Facebook']:
+    for q in [
+        f'"{name}" Facebook Canberra',
+        f'"{name}" Facebook ACT',
+        f'"{name}" Facebook',
+    ]:
         results = search(q, 5)
         for u in extract_urls(results):
             u = u.rstrip(".,;")

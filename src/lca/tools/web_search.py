@@ -7,6 +7,7 @@ import urllib.parse
 # Prefer the websearch package
 try:
     from websearch.engine import search as _package_search
+
     _has_package = True
 except ImportError:
     _has_package = False
@@ -23,15 +24,14 @@ def search(query: str, limit: int = 5) -> str:
 
     # Built-in fallback: DuckDuckGo HTML search (zero dependencies)
     url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
-    req = urllib.request.Request(url, headers={
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
-    })
+    req = urllib.request.Request(
+        url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
+    )
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
         results = re.findall(
-            r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
-            html, re.DOTALL
+            r'class="result__a"[^>]*href="([^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL
         )
         lines = []
         for u, t in results[:limit]:
@@ -45,7 +45,7 @@ def search(query: str, limit: int = 5) -> str:
                         clean_url = clean_url.split(sep)[0]
                         break
                 clean_url = urllib.parse.unquote(clean_url)
-            lines.append(f"{len(lines)+1}. {title}\n   {clean_url}")
+            lines.append(f"{len(lines) + 1}. {title}\n   {clean_url}")
         return "\n\n".join(lines) if lines else "(no results)"
     except Exception as e:
         return f"(search failed: {e})"

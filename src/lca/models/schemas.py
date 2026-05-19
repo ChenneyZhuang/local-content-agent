@@ -7,6 +7,7 @@ from typing import Optional
 
 class BusinessInfo(BaseModel):
     """Business identity discovered in Step 1."""
+
     name: str
     website: Optional[str] = None
     facebook: Optional[str] = None
@@ -14,6 +15,7 @@ class BusinessInfo(BaseModel):
 
 class BrandVoice(BaseModel):
     """Brand voice profile from Step 2."""
+
     introduction: str = Field(description="What the business actually does")
     personality: str = Field(description="Core brand voice and personality traits")
     writing_style: str = Field(description="Writing rules and conventions")
@@ -25,13 +27,17 @@ class BrandVoice(BaseModel):
 
 class Topic(BaseModel):
     """A content topic from Step 3."""
+
     index: int
     title: str
-    category: str = Field(description="Educational Tip | Customer Story | Festival Greeting | Local Community Engagement")
+    category: str = Field(
+        description="Educational Tip | Customer Story | Festival Greeting | Local Community Engagement"
+    )
 
 
 class Research(BaseModel):
     """Research output from Step 4."""
+
     topic_index: int
     core_summary: str
     key_insights: list[str] = Field(default_factory=list)
@@ -47,6 +53,7 @@ class Research(BaseModel):
 
 class DraftPost(BaseModel):
     """Draft Facebook post from Step 5."""
+
     topic_index: int
     content: str
     word_count: int
@@ -54,6 +61,7 @@ class DraftPost(BaseModel):
 
 class FinalPost(BaseModel):
     """Polished Facebook post from Step 6."""
+
     topic_index: int
     topic_title: str
     content: str
@@ -63,6 +71,7 @@ class FinalPost(BaseModel):
 
 class ContentCalendar(BaseModel):
     """Monthly content calendar."""
+
     business_name: str
     month: str
     year: int
@@ -71,6 +80,7 @@ class ContentCalendar(BaseModel):
 
 class PipelineResult(BaseModel):
     """Complete pipeline output for one business."""
+
     business: BusinessInfo
     brand_voice: BrandVoice
     topics: list[Topic]

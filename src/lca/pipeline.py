@@ -1,11 +1,14 @@
 """Main pipeline orchestrator — runs the 6-step workflow."""
 
-from pathlib import Path
 from datetime import datetime
 from lca.config import OUTPUT_DIR, MAX_TOPICS
 from lca.models.schemas import (
-    BusinessInfo, BrandVoice, Topic, Research,
-    DraftPost, FinalPost, ContentCalendar, PipelineResult,
+    BusinessInfo,
+    Research,
+    DraftPost,
+    FinalPost,
+    ContentCalendar,
+    PipelineResult,
 )
 from lca.agents.brand_voice import find_business
 from lca.agents.topics import analyse_brand, generate_topics
@@ -14,7 +17,9 @@ from lca.agents.drafter import draft_post
 from lca.agents.polisher import polish_post
 
 
-def run(business_name: str, website: str | None = None, facebook: str | None = None) -> PipelineResult:
+def run(
+    business_name: str, website: str | None = None, facebook: str | None = None
+) -> PipelineResult:
     """Run the full content generation pipeline for one business.
 
     Both website and Facebook are required — this tool is designed for
@@ -52,7 +57,7 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
         )
 
     # ── Step 2: Brand Voice ──
-    print(f"  Step 2: Analysing brand voice...")
+    print("  Step 2: Analysing brand voice...")
     brand = analyse_brand(business_name, info)
     (out_dir / "brand_voice.md").write_text(brand.raw, encoding="utf-8")
 
@@ -75,14 +80,20 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
         # Step 4: Research
         if not (topic_dir / "research_outline.md").exists():
             research = research_topic(
-                business_name, info.website, brand.introduction,
-                topic.title, topic.index,
+                business_name,
+                info.website,
+                brand.introduction,
+                topic.title,
+                topic.index,
             )
             (topic_dir / "research_outline.md").write_text(
-                f"# Topic {topic.index}: {topic.title}\n\n{research.raw}", encoding="utf-8"
+                f"# Topic {topic.index}: {topic.title}\n\n{research.raw}",
+                encoding="utf-8",
             )
         else:
-            research_raw = (topic_dir / "research_outline.md").read_text(encoding="utf-8")
+            research_raw = (topic_dir / "research_outline.md").read_text(
+                encoding="utf-8"
+            )
             # Strip the markdown header added during save
             research_raw = re.sub(r"^#\s*Topic\s+\d+:.+\n+", "", research_raw)
             research = Research(
@@ -95,13 +106,18 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
         if not (topic_dir / "draft_post.md").exists():
             draft = draft_post(brand.raw, research, topic.title)
             (topic_dir / "draft_post.md").write_text(
-                f"# Topic {topic.index}: {topic.title}\n\n{draft.content}", encoding="utf-8"
+                f"# Topic {topic.index}: {topic.title}\n\n{draft.content}",
+                encoding="utf-8",
             )
         else:
             draft_content = (topic_dir / "draft_post.md").read_text(encoding="utf-8")
             # Strip the markdown header added during save
             draft_content = re.sub(r"^#\s*Topic\s+\d+:.+\n+", "", draft_content)
-            draft = DraftPost(topic_index=topic.index, content=draft_content, word_count=len(draft_content.split()))
+            draft = DraftPost(
+                topic_index=topic.index,
+                content=draft_content,
+                word_count=len(draft_content.split()),
+            )
 
         # Step 6: Polish
         if not (topic_dir / "final_post.md").exists():
@@ -112,12 +128,14 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
             posts.append(final)
         else:
             final_content = (topic_dir / "final_post.md").read_text(encoding="utf-8")
-            posts.append(FinalPost(
-                topic_index=topic.index,
-                topic_title=topic.title,
-                content=final_content,
-                word_count=len(final_content.split()),
-            ))
+            posts.append(
+                FinalPost(
+                    topic_index=topic.index,
+                    topic_title=topic.title,
+                    content=final_content,
+                    word_count=len(final_content.split()),
+                )
+            )
 
     # ── Content Calendar ──
     now = datetime.now()
@@ -125,16 +143,21 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
         business_name=business_name,
         month=now.strftime("%B"),
         year=now.year,
-        posts=[{
-            "week": (i % 4) + 1,
-            "day": ["Mon", "Wed", "Fri", "Sat"][i % 4],
-            "topic": p.topic_title,
-            "category": topics[i].category if i < len(topics) else "General",
-        } for i, p in enumerate(posts)],
+        posts=[
+            {
+                "week": (i % 4) + 1,
+                "day": ["Mon", "Wed", "Fri", "Sat"][i % 4],
+                "topic": p.topic_title,
+                "category": topics[i].category if i < len(topics) else "General",
+            }
+            for i, p in enumerate(posts)
+        ],
     )
     (out_dir / "content_calendar.md").write_text(
         f"# {business_name} — Content Calendar\n\n"
-        + "\n".join(f"- Week {p['week']} {p['day']}: {p['topic'][:80]}" for p in calendar.posts),
+        + "\n".join(
+            f"- Week {p['week']} {p['day']}: {p['topic'][:80]}" for p in calendar.posts
+        ),
         encoding="utf-8",
     )
 

@@ -20,7 +20,7 @@ def research_topic(
     prompt = f"""Research this local business topic and build a Facebook post outline. Do NOT write the full post.
 
 Business: {business_name}
-Website: {website or 'N/A'}
+Website: {website or "N/A"}
 Topic: {topic_title}
 
 Brand Context: {brand_intro[:400]}
@@ -60,12 +60,18 @@ Rules: Only verified facts. Follow brand context. No full post draft."""
 
 def _extract(text: str, label: str, max_chars: int) -> str:
     import re
-    m = re.search(rf"{label}[:\-\s]*(.+?)(?:\n\s*\n|\n\d|\Z)", text, re.DOTALL | re.IGNORECASE)
+
+    m = re.search(
+        rf"{label}[:\-\s]*(.+?)(?:\n\s*\n|\n\d|\Z)", text, re.DOTALL | re.IGNORECASE
+    )
     return m.group(1).strip()[:max_chars] if m else ""
 
 
 def _extract_bullets(text: str, label: str, max_items: int) -> list[str]:
     import re
+
     section = _extract(text, label, 2000)
-    items = re.findall(r"[•\-\*\d]+\.?\s*(.+?)(?=\n\s*[•\-\*\d]+\.?|\Z)", section, re.DOTALL)
+    items = re.findall(
+        r"[•\-\*\d]+\.?\s*(.+?)(?=\n\s*[•\-\*\d]+\.?|\Z)", section, re.DOTALL
+    )
     return [i.strip() for i in items[:max_items] if len(i.strip()) > 5]

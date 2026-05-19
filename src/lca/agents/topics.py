@@ -21,14 +21,14 @@ def analyse_brand(name: str, info: BusinessInfo) -> BrandVoice:
 Use ONLY the real content from their website and Facebook page below.
 
 Business Name: {name}
-Website: {info.website or 'N/A'}
-Facebook: {info.facebook or 'N/A'}
+Website: {info.website or "N/A"}
+Facebook: {info.facebook or "N/A"}
 
 === WEBSITE CONTENT (formal, public-facing) ===
-{website_text or '(Could not fetch website content)'}
+{website_text or "(Could not fetch website content)"}
 
 === FACEBOOK PAGE CONTENT (casual, community-facing) ===
-{facebook_text or '(Could not fetch Facebook content)'}
+{facebook_text or "(Could not fetch Facebook content)"}
 
 Rules:
 1. ONLY use the content above. Do NOT invent facts or guess.
@@ -60,8 +60,8 @@ def generate_topics(name: str, info: BusinessInfo, brand: BrandVoice) -> list[To
     prompt = f"""Generate exactly 8 Facebook post topics for this business for the current month.
 
 Business: {name}
-Website: {info.website or 'N/A'}
-Facebook: {info.facebook or 'N/A'}
+Website: {info.website or "N/A"}
+Facebook: {info.facebook or "N/A"}
 
 BUSINESS TYPE: {brand.introduction[:500]}
 
@@ -86,13 +86,21 @@ Requirements:
                 category = "Festival Greeting"
             elif "community" in lower or "engagement" in lower or "spotlight" in lower:
                 category = "Local Community Engagement"
-            topics.append(Topic(index=len(topics)+1, title=m.group(2).strip(), category=category))
+            topics.append(
+                Topic(
+                    index=len(topics) + 1, title=m.group(2).strip(), category=category
+                )
+            )
 
     return topics[:8]
 
 
 def _extract_section(text: str, pattern: str) -> str:
-    m = re.search(rf"(?:^|\n)\s*[\*\-]*\s*(?:{pattern})[\*\-:\s]*(.+?)(?:\n\s*(?:\*\*|[A-Z][a-z])|\n\n|\Z)", text, re.DOTALL | re.IGNORECASE)
+    m = re.search(
+        rf"(?:^|\n)\s*[\*\-]*\s*(?:{pattern})[\*\-:\s]*(.+?)(?:\n\s*(?:\*\*|[A-Z][a-z])|\n\n|\Z)",
+        text,
+        re.DOTALL | re.IGNORECASE,
+    )
     return m.group(1).strip()[:500] if m else ""
 
 

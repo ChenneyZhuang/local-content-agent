@@ -30,12 +30,14 @@ def chat(prompt: str, system: str = "", max_tokens: int = 4096) -> str:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": prompt})
 
-    body = json.dumps({
-        "model": LLM_MODEL,
-        "messages": messages,
-        "max_tokens": max_tokens,
-        "temperature": 0.7,
-    }).encode()
+    body = json.dumps(
+        {
+            "model": LLM_MODEL,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": 0.7,
+        }
+    ).encode()
 
     req = urllib.request.Request(
         f"{DEEPSEEK_BASE_URL}/chat/completions",
