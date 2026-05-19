@@ -69,6 +69,8 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
             )
         else:
             research_raw = (topic_dir / "research_outline.md").read_text(encoding="utf-8")
+            # Strip the markdown header added during save
+            research_raw = re.sub(r"^#\s*Topic\s+\d+:.+\n+", "", research_raw)
             research = Research(
                 topic_index=topic.index,
                 core_summary=research_raw[:300],
@@ -83,6 +85,8 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
             )
         else:
             draft_content = (topic_dir / "draft_post.md").read_text(encoding="utf-8")
+            # Strip the markdown header added during save
+            draft_content = re.sub(r"^#\s*Topic\s+\d+:.+\n+", "", draft_content)
             draft = DraftPost(topic_index=topic.index, content=draft_content, word_count=len(draft_content.split()))
 
         # Step 6: Polish

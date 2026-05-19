@@ -18,8 +18,8 @@ def fetch(url: str, max_chars: int = 8000) -> str:
             html = resp.read().decode("utf-8", errors="ignore")
 
         # Strip scripts, styles, and HTML tags
-        text = re.sub(r"<script[^>]*>.*?</script>", "", html, flags=re.DOTALL)
-        text = re.sub(r"<style[^>]*>.*?</style>", "", text, flags=re.DOTALL)
+        text = re.sub(r"<script[^>]*>[\s\S]*?</script>", "", html)
+        text = re.sub(r"<style[^>]*>[\s\S]*?</style>", "", text)
         text = re.sub(r"<[^>]+>", " ", text)
         text = re.sub(r"\s+", " ", text).strip()
 

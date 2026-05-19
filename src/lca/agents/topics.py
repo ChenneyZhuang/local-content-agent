@@ -64,8 +64,8 @@ Requirements:
     topics = []
     for line in raw.split("\n"):
         line = line.strip()
-        m = re.match(r"^(\d+)[.\)\-]\s*(.+)$", line)
-        if m and 8 < len(m.group(2)) < 250:
+        m = re.match(r"^(\d+)[.\)\-:]\s*(.+)$", line)
+        if m and 3 < len(m.group(2)) < 250:
             category = "Educational Tip"
             lower = m.group(2).lower()
             if "customer" in lower or "story" in lower:
@@ -86,5 +86,5 @@ def _extract_section(text: str, pattern: str) -> str:
 
 def _extract_list(text: str, pattern: str) -> list[str]:
     section = _extract_section(text, pattern)
-    items = re.findall(r"[•\-\*]\s*(.+?)(?:\n|$)", section)
+    items = re.findall(r"[•\-\*]\s*(.+?)(?=\n\s*[•\-\*]|\Z)", section, re.DOTALL)
     return items[:10] if items else []

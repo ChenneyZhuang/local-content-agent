@@ -67,5 +67,5 @@ def _extract(text: str, label: str, max_chars: int) -> str:
 def _extract_bullets(text: str, label: str, max_items: int) -> list[str]:
     import re
     section = _extract(text, label, 2000)
-    items = re.findall(r"[•\-\*\d]+\.?\s*(.+?)(?:\n|$)", section)
+    items = re.findall(r"[•\-\*\d]+\.?\s*(.+?)(?=\n\s*[•\-\*\d]+\.?|\Z)", section, re.DOTALL)
     return [i.strip() for i in items[:max_items] if len(i.strip()) > 5]
