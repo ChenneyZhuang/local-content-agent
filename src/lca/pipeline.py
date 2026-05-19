@@ -17,10 +17,16 @@ from lca.agents.polisher import polish_post
 def run(business_name: str, website: str | None = None, facebook: str | None = None) -> PipelineResult:
     """Run the full content generation pipeline for one business.
 
+    Both website and Facebook are required — this tool is designed for
+    Canberra businesses with an established online presence.
+
     Args:
         business_name: Name of the business (e.g. "Brett's Automotive")
-        website: Optional known website URL
-        facebook: Optional known Facebook page URL
+        website: Optional known website URL (auto-discovered if omitted)
+        facebook: Optional known Facebook page URL (auto-discovered if omitted)
+
+    Raises:
+        RuntimeError: If either website or Facebook cannot be found.
     """
     import re
 
@@ -28,14 +34,22 @@ def run(business_name: str, website: str | None = None, facebook: str | None = N
     out_dir = OUTPUT_DIR / safe_name
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # ── Step 1: Find business links ──
-    if website or facebook:
+    # ── Step 1: Find business links (both website + Facebook required) ──
+    if website and facebook:
         info = BusinessInfo(name=business_name, website=website, facebook=facebook)
     else:
         info = find_business(business_name)
 
-    if not info.website and not info.facebook:
-        raise RuntimeError(f"Could not find website or Facebook for '{business_name}'")
+    if not info.website or not info.facebook:
+        missing = []
+        if not info.website:
+            missing.append("website")
+        if not info.facebook:
+            missing.append("Facebook")
+        raise RuntimeError(
+            f"Both website and Facebook are required for '{business_name}'. "
+            f"Missing: {', '.join(missing)}"
+        )
 
     # ── Step 2: Brand Voice ──
     print(f"  Step 2: Analysing brand voice...")
