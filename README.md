@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Status: Alpha](https://img.shields.io/badge/Status-Alpha-orange.svg)](https://github.com/ChenneyZhuang/local-content-agent)
+[![CI](https://github.com/ChenneyZhuang/local-content-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/ChenneyZhuang/local-content-agent/actions/workflows/ci.yml)
 
 **An AI agent that generates a full month of Facebook posts for local businesses — complete with brand voice analysis, web research, drafting, and human-style polishing.**
 
