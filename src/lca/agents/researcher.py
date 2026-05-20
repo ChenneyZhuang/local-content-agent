@@ -3,6 +3,7 @@
 from lca.tools.llm import chat
 from lca.tools.web_search import search
 from lca.models.schemas import Research
+import re
 
 
 def research_topic(
@@ -59,7 +60,6 @@ Rules: Only verified facts. Follow brand context. No full post draft."""
 
 
 def _extract(text: str, label: str, max_chars: int) -> str:
-    import re
 
     m = re.search(
         rf"{label}[:\-\s]*(.+?)(?:\n\s*\n|\n\d|\Z)", text, re.DOTALL | re.IGNORECASE
@@ -68,7 +68,6 @@ def _extract(text: str, label: str, max_chars: int) -> str:
 
 
 def _extract_bullets(text: str, label: str, max_items: int) -> list[str]:
-    import re
 
     section = _extract(text, label, 2000)
     items = re.findall(

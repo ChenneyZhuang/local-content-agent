@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from lca.config import OUTPUT_DIR, MAX_TOPICS
+import re
 from lca.models.schemas import (
     BusinessInfo,
     Research,
@@ -33,8 +34,6 @@ def run(
     Raises:
         RuntimeError: If either website or Facebook cannot be found.
     """
-    import re
-
     safe_name = re.sub(r"[^a-zA-Z0-9_\u4e00-\u9fff]+", "_", business_name).strip("_")
     out_dir = OUTPUT_DIR / safe_name
     out_dir.mkdir(parents=True, exist_ok=True)

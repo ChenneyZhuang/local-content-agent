@@ -22,7 +22,6 @@ classifiers = [
 
 dependencies = [
     "pydantic>=2.0",
-    "pyyaml>=6.0",
     "web-search @ git+https://github.com/ChenneyZhuang/web-search.git",
 ]
 
